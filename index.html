@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blue Chip Fantasy Draft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Brand logo, pinned in the black margin columns either side of the
+     centered content, vertically centered — shown on every screen. -->
+<img class="side-logo side-logo-left" src="logo.jpg" alt="Fantasy Draft Central">
+<img class="side-logo side-logo-right" src="logo.jpg" alt="Fantasy Draft Central">
+
+<!-- Launch screen: name your team before anything else loads -->
+<div class="launch" id="launch">
+  <div class="launch-card">
+    <img class="launch-logo" src="logo.jpg" alt="Fantasy Draft Central">
+
+    <div class="teams-section" id="teamsSection" hidden>
+      <p class="launch-kicker">Your teams</p>
+      <ul class="teams-list" id="teamsList"></ul>
+      <p class="teams-divider">or start a new one</p>
+    </div>
+
+    <p class="launch-kicker">Season 1 · Week 1</p>
+    <h1>Name your team, then start drafting.</h1>
+    <p class="launch-sub">Nine starting slots, five bench spots, 32 rosters to pick from. Nothing is filled in for you.</p>
+    <label for="teamNameInput">Team name</label>
+    <input id="teamNameInput" type="text" maxlength="28" placeholder="Waterbury Wreckers" autocomplete="off">
+    <label for="ownerInput">Your name <span class="opt">(optional)</span></label>
+    <input id="ownerInput" type="text" maxlength="24" placeholder="Manager" autocomplete="off">
+    <p class="launch-error" id="launchError" hidden>Enter a team name to continue.</p>
+    <button class="btn btn-primary btn-block" id="createTeamBtn">Create my team</button>
+  </div>
+</div>
+
+<div class="app" id="app" hidden>
+
+  <header class="scoreboard">
+    <div class="sb-team">
+      <h1 id="sbTeamName">—</h1>
+      <p id="sbOwner"></p>
+      <button class="btn-text sb-switch" id="switchTeamBtn">Switch team</button>
+    </div>
+    <div class="sb-stats">
+      <div class="stat">
+        <span class="stat-num" id="sbPoints">0.0</span>
+        <span class="stat-label">total points</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="sbWeek">0</span>
+        <span class="stat-label">weeks played</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" id="sbFilled">0/14</span>
+        <span class="stat-label">roster spots</span>
+      </div>
+      <button class="btn btn-primary" id="simBtn" disabled>Play week 1</button>
+    </div>
+  </header>
+
+  <main class="layout">
+
+    <section class="board">
+      <div class="board-head">
+        <h2>Draft board</h2>
+        <span class="count" id="poolCount"></span>
+      </div>
+
+      <div class="filters">
+        <input type="search" id="searchInput" placeholder="Search a player" autocomplete="off">
+        <select id="teamFilter" aria-label="Filter by NFL team"></select>
+        <select id="posFilter" aria-label="Filter by position">
+          <option value="ALL">All positions</option>
+          <option value="QB">QB</option>
+          <option value="RB">RB</option>
+          <option value="WR">WR</option>
+          <option value="TE">TE</option>
+          <option value="K">K</option>
+        </select>
+        <label class="check"><input type="checkbox" id="hideDrafted" checked> Hide drafted</label>
+      </div>
+
+      <ul class="player-list" id="playerList"></ul>
+      <p class="empty" id="boardEmpty" hidden>No players match those filters. Clear the search or pick another team.</p>
+
+      <details class="add-player">
+        <summary>Add a player who isn't listed</summary>
+        <div class="add-grid">
+          <input type="text" id="newName" placeholder="Player name" maxlength="34" autocomplete="off">
+          <select id="newTeam" aria-label="NFL team"></select>
+          <select id="newPos" aria-label="Position">
+            <option value="QB">QB</option>
+            <option value="RB">RB</option>
+            <option value="WR">WR</option>
+            <option value="TE">TE</option>
+            <option value="K">K</option>
+          </select>
+          <button class="btn btn-ghost" id="addPlayerBtn">Add to board</button>
+        </div>
+        <p class="add-note" id="addNote" hidden></p>
+      </details>
+    </section>
+
+    <aside class="sidebar">
+      <div class="roster">
+        <div class="roster-head">
+          <h2>My roster</h2>
+          <button class="btn btn-text" id="clearBtn">Clear roster</button>
+        </div>
+        <ul class="slot-list" id="slotList"></ul>
+      </div>
+
+      <div class="friends">
+        <div class="friends-head">
+          <h2>Friends</h2>
+        </div>
+        <ul class="friend-list" id="friendList"></ul>
+        <p class="empty friend-empty" id="friendEmpty" hidden>No friends yet. Add another local team or generate a rival to compare against.</p>
+        <div class="friend-add">
+          <select id="friendSelect" aria-label="Add a friend"></select>
+          <button class="btn btn-ghost" id="addFriendBtn">Add friend</button>
+        </div>
+        <button class="btn btn-text" id="quickRivalBtn">+ Generate a rival team</button>
+      </div>
+
+      <div class="recap">
+        <h2>Week recap</h2>
+        <div id="recapBody">
+          <p class="empty">Draft at least one starter, then play a week to see scoring here.</p>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <footer class="foot">
+    <p>Player pool covers fantasy-relevant skill players from all 32 teams as of the 2025 season. Weekly scoring is simulated in the browser — swap in a stats API to score real games.</p>
+  </footer>
+</div>
+
+<div class="compare-overlay" id="compareOverlay" hidden>
+  <div class="compare-card">
+    <button class="compare-close" id="compareClose" aria-label="Close comparison">&times;</button>
+    <div id="compareBody"></div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
